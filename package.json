@@ -1,0 +1,30 @@
+{
+  "scripts": {
+    "release": "npx standard-version"
+  },
+  "standard-version": {
+    "packages": [
+      {
+        "path": "frontend",
+        "bumpFiles": [
+          {
+            "filename": "frontend/package.json",
+            "type": "json"
+          }
+        ]
+      },
+      {
+        "path": "backend",
+        "bumpFiles": [
+          {
+            "filename": "backend/package.json",
+            "type": "json"
+          }
+        ]
+      }
+    ]
+  },
+  "devDependencies": {
+    "standard-version": "^9.5.0"
+  }
+}

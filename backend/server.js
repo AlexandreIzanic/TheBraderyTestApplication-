@@ -10,19 +10,13 @@ const cors = require("cors");
 
 const mysqlDB = require("./config/connectToMySQL");
 
+const productRoutes = require("./routes/productsRoute");
+
 app.use(cors());
 
 mysqlDB.connectToMySQL();
 
-const sqlQuery = "SELECT * FROM products";
-mysqlDB.connection.query(sqlQuery, (err, products) => {
-  if (err) {
-    console.log(err);
-  } else {
-    const rows = JSON.parse(JSON.stringify(products));
-    console.log(rows);
-  }
-});
+app.use("/products", productRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello, World!");

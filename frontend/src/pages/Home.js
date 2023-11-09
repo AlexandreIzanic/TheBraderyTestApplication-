@@ -6,10 +6,10 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get("/api")
+      .get("/products")
       .then(function (response) {
-        console.log(response);
-        setBackendData(response.data.users); // Assurez-vous d'accéder à response.data pour obtenir les données
+        console.log(response.data.products);
+        setBackendData(response.data.products); // Assurez-vous d'accéder à response.data pour obtenir les données
       })
       .catch(function (error) {
         // handle error
@@ -17,10 +17,41 @@ export default function Home() {
       });
   }, []);
 
+  const renderedData = backendData.map((product) => (
+    <tr className="hover" key={product.id}>
+      <th className="font-light">{product.id}</th>
+      <th className="">{product.name}</th>
+      <th className="font-medium">{product.price}</th>
+      <th
+        className={`font-medium ${
+          product.inventory < 25
+            ? "text-red-500"
+            : product.inventory <= 50
+            ? "text-yellow-500"
+            : ""
+        }`}
+      >
+        {product.inventory}
+      </th>
+
+      <button className="buttonBase">Add</button>
+    </tr>
+  ));
+
   return (
-    <div className="flex h-screen justify-center items-center text-center bg-slate-200 flex-col">
-      <div>VOICI LA HOME PAGE</div>
-      <div>Données du backend : {backendData}</div>
+    <div className="flex  justify-center items-center text-center  flex-col">
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>inventory</th>
+          </tr>
+        </thead>
+
+        {renderedData}
+      </table>
     </div>
   );
 }

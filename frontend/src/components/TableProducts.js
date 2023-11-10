@@ -9,14 +9,27 @@ export default function TableProducts() {
   useEffect(() => {
     productStore.fetchProducts();
   }, []);
-
+  console.log(productStore.products);
   const cart = useContext(CartContext);
+
+  console.log(productStore.productData);
+
+  console.log(cart.items);
 
   const renderedData = productStore.products ? (
     productStore.products.map((product) => {
       const productQuantity = cart.getProductQuantity(product.id);
 
-      console.log(cart.items);
+      /*    const productInCart = cart.items.some(
+        (cartItem) => cartItem.id === product.id
+      );
+
+      if (productInCart) {
+        // Faire quelque chose avec le produit présent dans le panier
+        console.log(
+          `Product with id ${product.id} is in the cart at quantity : ${productQuantity}`
+        );
+      } */
       return (
         <tr className="hover" key={product.id}>
           <th className="font-light">{product.id}</th>

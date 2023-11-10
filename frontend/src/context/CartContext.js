@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import fetchProductData from "../store/ProductsStore"; // Assuming fetchProductData is the correct function
+import fetchProductData from "../store/ProductsStore";
 
 export const CartContext = createContext({
   items: [],
@@ -14,7 +14,6 @@ export const CartContext = createContext({
 export function CartProvider({ children }) {
   const [cartProducts, setCartProducts] = useState([]);
 
-  // Function to get the quantity of a product in the cart
   function getProductQuantity(id) {
     const product = cartProducts.find((product) => product.id === id);
     return product ? product.quantity : 0;
@@ -67,10 +66,12 @@ export function CartProvider({ children }) {
 
   // Function to calculate the total cost of items in the cart
   function getTotalCost() {
-    return cartProducts.reduce((total, cartItem) => {
+    let totalCost = 0;
+    cartProducts.forEach((cartItem) => {
       const productData = fetchProductData(cartItem.id);
-      return total + productData.price * cartItem.quantity;
-    }, 0);
+      totalCost += productData.price * cartItem.quantity;
+    });
+    return totalCost;
   }
 
   function getTotalQuantity() {

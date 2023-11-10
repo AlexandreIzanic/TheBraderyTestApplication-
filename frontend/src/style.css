@@ -4,6 +4,11 @@
 
 @layer components {
   .buttonBase {
-    @apply btn bg-gray-50 text-[#e0e0e0] rounded-lg border border-[#e0e0e0] text-sm font-semibold h-[1.8125rem] gap-2.5 py-[0.1875rem] px-[1.0625rem] min-h-[2rem] flex-shrink-0 inline-flex justify-center items-center;
+    @apply btn  rounded-lg border text-sm font-semibold h-[1.8125rem] gap-2.5 py-[0.1875rem] px-[1.0625rem] min-h-[2rem] flex-shrink-0 inline-flex justify-center items-center;
+
+    /* Add styles for hover effect */
+    &:hover {
+      @apply text-[#e0e0e0] border-[#e0e0e0];
+    }
   }
 }

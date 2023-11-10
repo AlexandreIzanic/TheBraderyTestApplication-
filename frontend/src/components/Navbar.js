@@ -1,10 +1,30 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
+import useProductStore from "../store/ProductsStore";
+import ProductListComponent from "./ProductListComponent";
 export default function Navbar() {
   const cart = useContext(CartContext);
 
+  const productStore = useProductStore();
+
+  useEffect(() => {
+    // Appel de la fonction au montage du composant
+    productStore.fetchProductData(2);
+  }, []);
+
+  useEffect(() => {
+    // Affichage des données dès qu'elles sont disponibles
+    console.log(productStore.productData);
+  }, [productStore.productData]);
+
+  const productsCount = cart.items.reduce(
+    (sum, product) => sum + product.quantity,
+    0
+  );
   const totalQuantity = cart.getTotalQuantity();
+  /*   const totalCost = cart.getTotalCost(); */
+
   return (
     <>
       <div className="navbar bg-base-100">
@@ -42,11 +62,22 @@ export default function Navbar() {
             >
               <div className="card-body">
                 <span className="font-bold text-lg">{totalQuantity} Items</span>
-                <span className="text-info">Subtotal: $999</span>
+                {/*              <span className="text-info">Subtotal: {totalCost}</span> */}
                 <div className="card-actions">
                   <Link className="btn btn-primary btn-block" to="/cart">
                     View cart
                   </Link>
+                  {/*  {productsCount > 0 ? (
+                    <>
+                      <p>Items in your cart:</p>
+                      <ProductListComponent
+                        productStore={productStore}
+                        cart={cart}
+                      />
+                    </>
+                  ) : (
+                    <h1>There are no items in your cart!</h1>
+                  )} */}
                 </div>
               </div>
             </div>

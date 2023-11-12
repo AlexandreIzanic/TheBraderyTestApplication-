@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const express = require("express");
+
 const app = express();
 const port = process.env.PORT;
 const cors = require("cors");
@@ -11,6 +12,7 @@ const cors = require("cors");
 const mysqlDB = require("./config/connectToMySQL");
 
 const productRoutes = require("./routes/productsRoute");
+const stripeRoute = require("./routes/stripeRoute");
 
 app.use(cors());
 

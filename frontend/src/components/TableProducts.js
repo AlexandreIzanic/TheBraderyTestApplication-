@@ -8,7 +8,7 @@ export default function TableProducts() {
 
   useEffect(() => {
     productStore.fetchProducts();
-  }, [productStore]);
+  }, []);
   console.log(productStore.products);
   const cart = useContext(CartContext);
 
@@ -39,7 +39,9 @@ export default function TableProducts() {
 
           {productQuantity === 0 ? (
             <button
-              onClick={() => cart.addOneToCart(product.id)}
+              onClick={() =>
+                cart.addOneToCart(product.id, product.name, product.price)
+              }
               className="buttonBase"
             >
               Add To Cart
@@ -53,12 +55,23 @@ export default function TableProducts() {
                 -
               </button>
               <span>{productQuantity} in cart</span>
-              <button
-                className="buttonBase"
-                onClick={() => cart.addOneToCart(product.id)}
-              >
-                +
-              </button>
+              {productQuantity < product.inventory ? (
+                <button
+                  className="buttonBase"
+                  onClick={() => cart.addOneToCart(product.id)}
+                >
+                  +
+                </button>
+              ) : (
+                <button
+                  disabled
+                  className="buttonBase bg-red-400"
+                  onClick={() => cart.addOneToCart(product.id)}
+                >
+                  +
+                </button>
+              )}
+
               <button onClick={() => cart.deleteFromCart(product.id)}>
                 Remove
               </button>

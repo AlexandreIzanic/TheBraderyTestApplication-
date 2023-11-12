@@ -2,32 +2,37 @@
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
-
 const express = require("express");
-
-const app = express();
-const port = process.env.PORT;
 const cors = require("cors");
 
 const mysqlDB = require("./config/connectToMySQL");
+const bodyParser = require("body-parser");
 
 const productRoutes = require("./routes/productsRoute");
 const stripeRoute = require("./routes/stripeRoute");
+const stripeWebhookRoute = require("./routes/stripeWebhookRoute");
 
-app.use(cors());
+const app = express();
 
+app.use(
+  cors({
+    origin: ["http://localhost:3001", "https://checkout.stripe.com"],
+    credentials: true,
+  })
+);
+app.use(express.static("public"));
+
+app.use("/stripe", stripeWebhookRoute);
+app.use(express.json());
+app.use("/stripe", stripeRoute);
+app.use(bodyParser.json());
+
+// Connect To DB
 mysqlDB.connectToMySQL();
 
 app.use("/products", productRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
-
-app.get("/api", (req, res) => {
-  res.json({ users: ["userOne", "userTwo", "userThree"] });
-});
-
+const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Serveur Node.js écoutant sur le port ${port}`);
 });

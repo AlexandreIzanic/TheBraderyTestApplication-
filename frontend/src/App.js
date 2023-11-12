@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import CartProvider from "./context/CartContext";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
 function App() {
   return (
     <CartProvider>
@@ -13,6 +14,7 @@ function App() {
           <>
             <Route index path="/" element={<Home />} />
             <Route index path="/cart" element={<Cart />} />
+            <Route index path="/success" element={<CheckoutSuccess />} />
           </>
         </Routes>
       </div>

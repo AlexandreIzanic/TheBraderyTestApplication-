@@ -1,36 +1,58 @@
-const express = require("express"); /* 
-const UsersMySQL = require("../models/userSchemaMYSQL"); */
+const express = require("express");
 const router = new express.Router();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
+const mysqlDB = require("../config/connectToMySQL");
 
-// FEATURES
-const subQuotaStandard = 50;
-const subQuotaPro = 500;
+var getRawBody = require("raw-body");
+const YOUR_DOMAIN = "http://localhost:3001";
 
 const endpointSecret =
-  "whsec_75c53bb0865661be290dbf2ea4491e81aa0bdf973bbc92fa376b313bc0ec0a8d";
+  "whsec_9173d599a01ed84ce8f1373f594e0d1ac1d5aa9d982db7654aaadfe31153ccd0";
 
-router.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    let event;
+router.post("/test", async (req, res) => {
+  test = req.body.cartItems;
+  res.json(test);
+});
 
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-      console.log("Webhook Verified");
-    } catch (err) {
-      console.log(`Webhook Error: ${err.message}`);
-      res.status(400).send(`Webhook Error: ${err.message}`);
-      return;
-    }
+router.post("/create-checkout-session", async (req, res) => {
+  console.log(req.body);
+  const line_items = req.body.cartItems.map((item) => {
+    return {
+      price_data: {
+        currency: "eur",
+        product_data: {
+          name: item.name,
 
-    // Handle the event
+          metadata: {
+            id: item.id,
+          },
+        },
+        unit_amount: item.price * 100,
+      },
+      quantity: item.quantity,
+    };
+  });
 
-    // Return a 200 res to acknowledge receipt of the event
-    res.send().end();
-  }
-);
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
 
-module.exports = router;
+    line_items,
+    mode: "payment",
+    success_url: `${YOUR_DOMAIN}/success`,
+    cancel_url: `${YOUR_DOMAIN}/cancel`,
+    shipping_address_collection: {
+      allowed_countries: ["FR"],
+    },
+    custom_text: {
+      shipping_address: {
+        message:
+          "Please note that we can't guarantee 2-day delivery for PO boxes at this time.",
+      },
+      submit: {
+        message: "We'll email you instructions on how to get started.",
+      },
+    },
+  });
+
+  res.json({ url: session.url });
+});

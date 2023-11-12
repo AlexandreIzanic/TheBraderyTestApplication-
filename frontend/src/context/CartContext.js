@@ -20,12 +20,14 @@ export function CartProvider({ children }) {
   }
 
   // Function to add one item to the cart
-  function addOneToCart(id) {
+  function addOneToCart(id, name, price) {
     const existingProduct = cartProducts.find((product) => product.id === id);
 
     if (!existingProduct) {
+      console.log("test");
+      console.log(existingProduct);
       // Product is not in the cart
-      setCartProducts([...cartProducts, { id, quantity: 1 }]);
+      setCartProducts([...cartProducts, { id, quantity: 1, name, price }]);
     } else {
       // Product is already in the cart
       setCartProducts(

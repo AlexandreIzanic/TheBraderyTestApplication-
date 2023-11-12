@@ -10,9 +10,8 @@ router.post(
   express.raw({ type: "application/json" }),
   async (req, res) => {
     let event = req.body;
-
+    // Signature Stripe
     if (endpointSecret) {
-      // Get the signature sent by Stripe
       const signature = req.headers["stripe-signature"];
       try {
         event = stripe.webhooks.constructEvent(
@@ -26,25 +25,34 @@ router.post(
       }
     }
 
-    // Handle the event
     switch (event.type) {
       case "checkout.session.completed":
         const checkoutSessionCompleted = event.data.object;
         console.log(checkoutSessionCompleted);
 
-        // Récupérez les informations nécessaires depuis l'événement
-        const productId = checkoutSessionCompleted.client_reference_id;
         const addressDetails =
           checkoutSessionCompleted.shipping_details.address;
 
         const concatenatedAddress = `${addressDetails.line1}, ${addressDetails.city}, ${addressDetails.postal_code}, ${addressDetails.country}`;
 
-        const amountTotal = checkoutSessionCompleted.amount_total / 100;
-        const name = checkoutSessionCompleted.shipping_details.name;
+        // Prevent apostrophe error on SQL query
+        const escapedAddress = concatenatedAddress.replace(/'/g, "''");
 
-        const insertOrderQuery = `
-    INSERT INTO orders ( email, adresse, amount_total , date_creation )
-    VALUES ('${checkoutSessionCompleted.customer_details.email}', '${concatenatedAddress}', '${amountTotal}' , NOW())
+        const amountTotal = checkoutSessionCompleted.amount_total / 100;
+
+        const session = await stripe.checkout.sessions.retrieve(
+          checkoutSessionCompleted.id
+        );
+
+        const sessionDesc = session.metadata.metadataItem;
+
+        // Update order created when checkout session created
+        const insertOrderQuery = `UPDATE orders
+SET email = '${checkoutSessionCompleted.customer_details.email}',
+    adresse = '${escapedAddress}',
+    amount_total = '${amountTotal}',
+    order_desc = '${sessionDesc}'
+WHERE stripe_session_id = '${checkoutSessionCompleted.id}';
   `;
 
         try {
@@ -56,17 +64,6 @@ router.post(
 
         break;
 
-      case "customer.subscription.created":
-        const customerSubscriptionCreated = event.data.object;
-
-        break;
-
-      case "customer.subscription.deleted":
-        const customerSubscriptionDeleted = event.data.object;
-
-        break;
-      case "customer.subscription.updated":
-        break;
       default:
         console.log(`Unhandled event type ${event.type}`);
     }

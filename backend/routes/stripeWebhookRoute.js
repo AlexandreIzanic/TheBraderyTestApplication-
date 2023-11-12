@@ -39,11 +39,12 @@ router.post(
 
         const concatenatedAddress = `${addressDetails.line1}, ${addressDetails.city}, ${addressDetails.postal_code}, ${addressDetails.country}`;
 
+        const amountTotal = checkoutSessionCompleted.amount_total / 100;
         const name = checkoutSessionCompleted.shipping_details.name;
 
         const insertOrderQuery = `
-    INSERT INTO orders ( email, adresse, date_creation)
-    VALUES ('${checkoutSessionCompleted.customer_details.email}', '${concatenatedAddress}', NOW())
+    INSERT INTO orders ( email, adresse, amount_total , date_creation )
+    VALUES ('${checkoutSessionCompleted.customer_details.email}', '${concatenatedAddress}', '${amountTotal}' , NOW())
   `;
 
         try {

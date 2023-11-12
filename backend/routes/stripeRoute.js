@@ -25,12 +25,17 @@ router.post("/create-checkout-session", async (req, res) => {
 
           metadata: {
             id: item.id,
+            quantity: item.quantity,
           },
         },
         unit_amount: item.price * 100,
       },
       quantity: item.quantity,
     };
+  });
+
+  const metadataItem = req.body.cartItems.map((item) => {
+    item.name;
   });
 
   const session = await stripe.checkout.sessions.create({
@@ -43,6 +48,8 @@ router.post("/create-checkout-session", async (req, res) => {
     shipping_address_collection: {
       allowed_countries: ["FR"],
     },
+    metadata: metadataItem,
+
     custom_text: {
       shipping_address: {
         message:
@@ -56,3 +63,5 @@ router.post("/create-checkout-session", async (req, res) => {
 
   res.json({ url: session.url });
 });
+
+module.exports = router;

@@ -40,11 +40,9 @@ export default function Cart() {
         </thead>
         <ProductListComponent productStore={productStore} cart={cart} />
 
-        {/*         <form action="/stripe/create-checkout-session" method="POST"> */}
         <button type="submit" onClick={handleCheckout}>
           Checkout
         </button>
-        {/*         </form> */}
       </table>
     </div>
   );

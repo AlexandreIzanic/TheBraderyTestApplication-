@@ -9,6 +9,7 @@ const mysqlDB = require("./config/connectToMySQL");
 const bodyParser = require("body-parser");
 
 const productRoutes = require("./routes/productsRoute");
+const orderRoutes = require("./routes/orderRoutes");
 const stripeRoute = require("./routes/stripeRoute");
 const stripeWebhookRoute = require("./routes/stripeWebhookRoute");
 
@@ -31,6 +32,7 @@ app.use(bodyParser.json());
 mysqlDB.connectToMySQL();
 
 app.use("/products", productRoutes);
+app.use("/orders", orderRoutes);
 
 const port = process.env.PORT;
 app.listen(port, () => {

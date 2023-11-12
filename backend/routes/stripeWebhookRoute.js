@@ -55,6 +55,11 @@ SET email = '${checkoutSessionCompleted.customer_details.email}',
 WHERE stripe_session_id = '${checkoutSessionCompleted.id}';
   `;
 
+        const idRegex = /ID: (\d+)/;
+        const id1 = sessionDesc.match(idRegex)[1];
+        console.log("id1");
+        console.log(id1);
+
         try {
           await mysqlDB.connection.query(insertOrderQuery);
           console.log("Order added to the database");

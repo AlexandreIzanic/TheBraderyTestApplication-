@@ -5,9 +5,6 @@ const mysqlDB = require("../config/connectToMySQL");
 
 const YOUR_DOMAIN = "http://localhost:3001";
 
-const endpointSecret =
-  "whsec_9173d599a01ed84ce8f1373f594e0d1ac1d5aa9d982db7654aaadfe31153ccd0";
-
 router.post("/create-checkout-session", async (req, res) => {
   try {
     // Items from cartItems Front
@@ -22,6 +19,8 @@ router.post("/create-checkout-session", async (req, res) => {
 
     // Retrieve Items data for checkout
     const line_items = req.body.cartItems.map((item) => {
+      // Prevent Error Invalid Integer Stripe
+      const itemPrice = (item.price * 100).toFixed(0);
       return {
         price_data: {
           currency: "eur",
@@ -33,7 +32,7 @@ router.post("/create-checkout-session", async (req, res) => {
               quantity: item.quantity,
             },
           },
-          unit_amount: item.price * 100,
+          unit_amount: itemPrice,
         },
         quantity: item.quantity,
       };
@@ -44,7 +43,7 @@ router.post("/create-checkout-session", async (req, res) => {
       payment_method_types: ["card"],
       line_items,
       mode: "payment",
-      success_url: `${YOUR_DOMAIN}/success`,
+      success_url: `${YOUR_DOMAIN}/success/`,
       cancel_url: `${YOUR_DOMAIN}/cancel`,
       shipping_address_collection: {
         allowed_countries: ["FR"],

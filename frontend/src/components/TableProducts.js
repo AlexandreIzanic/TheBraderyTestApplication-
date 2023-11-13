@@ -34,19 +34,23 @@ export default function TableProducts() {
           <th className="font-light">{product.id}</th>
           <th className="">{product.name}</th>
           <th className="font-medium">{product.price}</th>
-          <th
-            className={`font-medium ${
-              product.inventory < 25
-                ? "text-red-500"
-                : product.inventory <= 50
-                ? "text-yellow-500"
-                : ""
-            }`}
-          >
-            {product.inventory}
-          </th>
+          {product.inventory > 0 ? (
+            <th
+              className={`font-medium ${
+                product.inventory < 25
+                  ? "text-red-500"
+                  : product.inventory <= 50
+                  ? "text-yellow-500"
+                  : ""
+              }`}
+            >
+              {product.inventory}
+            </th>
+          ) : (
+            <th> Out Of Stock </th>
+          )}
 
-          {productQuantity === 0 ? (
+          {product.inventory > 0 && productQuantity === 0 ? (
             <button
               onClick={() =>
                 cart.addOneToCart(product.id, product.name, product.price)
@@ -55,7 +59,7 @@ export default function TableProducts() {
             >
               Add To Cart
             </button>
-          ) : (
+          ) : product.inventory > 0 ? (
             <>
               <button
                 className="buttonBase"
@@ -81,6 +85,8 @@ export default function TableProducts() {
                 </button>
               )}
             </>
+          ) : (
+            ""
           )}
         </tr>
       );

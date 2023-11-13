@@ -1,16 +1,9 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
-import useProductStore from "../store/ProductsStore";
 export default function Navbar() {
   const cart = useContext(CartContext);
-
-  const productStore = useProductStore();
-
-  useEffect(() => {
-    console.log(productStore.productData);
-  }, [productStore.productData]);
-
+  // Number Items in Cart
   const totalQuantity = cart.getTotalQuantity();
 
   return (

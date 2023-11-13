@@ -19,5 +19,5 @@ async function connectToMySQL() {
 
 module.exports = {
   connectToMySQL,
-  connection, // Exportez également la connexion MySQL pour l'utiliser ailleurs
+  connection, // To query:  mysqlDB.connection.query
 };

@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
@@ -13,10 +13,15 @@ function App() {
 
         <Routes>
           <>
-            <Route index path="*" element={<ErrorPage />} />
             <Route index path="/" element={<Home />} />
             <Route index path="/cart" element={<Cart />} />
+
+            {/* Stripe Routes */}
             <Route index path="/success" element={<CheckoutSuccess />} />
+            <Route index path="/cancel" element={<Navigate to="/" />} />
+
+            {/* ERROR */}
+            <Route index path="*" element={<ErrorPage />} />
           </>
         </Routes>
       </div>

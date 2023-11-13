@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 
 function ProductListComponent({ productStore, cart }) {
@@ -19,13 +20,30 @@ function ProductListComponent({ productStore, cart }) {
   productsInCart.forEach((product) => {
     const productQuantity = cart.getProductQuantity(product.id);
 
-    // Ajouter le prix du produit au totalCount
+    // Add Price of Product into Total
     totalCount += product.price * productQuantity;
   });
 
   // Round to two decimal places and convert to number for display
   const roundedTotalCount = Number(totalCount.toFixed(2));
 
+  const cartItems = cart.items;
+  const handleCheckout = () => {
+    axios
+      .post(
+        `/stripe/create-checkout-session`,
+        { cartItems: cartItems },
+        { headers: { "Content-Type": "application/json" } }
+      )
+      .then((res) => {
+        if (res.data.url) {
+          window.location.href = res.data.url;
+        }
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+  };
   return (
     <>
       {productsInCart.map((product) => {
@@ -36,14 +54,18 @@ function ProductListComponent({ productStore, cart }) {
             <th className="">{product.name}</th>
             <th className="font-medium">{product.price}</th>
             <th className="font-medium">{productQuantity}</th>
-            <th className="font-medium">{product.price * productQuantity}</th>
+            <th className="font-medium">
+              {parseFloat((product.price * productQuantity).toFixed(2))}
+            </th>
           </tr>
         );
       })}
 
       <div className="flex w-[600px] justify-between fixed mt-10 ">
         <p>Total: {roundedTotalCount}€</p>
-        <btn className="buttonBase">Checkout</btn>
+        <button className="buttonBase" type="submit" onClick={handleCheckout}>
+          Checkout
+        </button>
       </div>
     </>
   );

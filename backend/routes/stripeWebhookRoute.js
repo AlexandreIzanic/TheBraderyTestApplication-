@@ -33,7 +33,6 @@ router.post(
           checkoutSessionCompleted.shipping_details.address;
 
         const concatenatedAddress = `${addressDetails.line1}, ${addressDetails.city}, ${addressDetails.postal_code}, ${addressDetails.country}`;
-
         // Prevent apostrophe error on SQL query
         const escapedAddress = concatenatedAddress.replace(/'/g, "''");
 
@@ -42,10 +41,10 @@ router.post(
         const session = await stripe.checkout.sessions.retrieve(
           checkoutSessionCompleted.id
         );
-
         const sessionDesc = session.metadata.metadataItem;
         // Prevent apostrophe error on SQL query
         const escapedSessionDesc = sessionDesc.replace(/'/g, "''");
+
         // Update order created when checkout session created
         const insertOrderQuery = `UPDATE orders
 SET email = '${checkoutSessionCompleted.customer_details.email}',
@@ -56,7 +55,6 @@ WHERE stripe_session_id = '${checkoutSessionCompleted.id}';
   `;
 
         // Extraire les ID des orders
-
         const regex = /ID: (\d+),.*?Quantity: (\d+)/g;
         const productsIds = [];
         let match;
@@ -72,7 +70,7 @@ WHERE stripe_session_id = '${checkoutSessionCompleted.id}';
         console.log(productsIds);
 
         productsIds.forEach((id) => {
-          // Mettre a jour l'inventaire
+          // Update Inventory
           const updateQuery = `UPDATE products SET inventory = inventory - ${id.quantity} 
           WHERE id = ${id.productId}`;
           mysqlDB.connection.query(updateQuery, (error, results) => {
@@ -96,7 +94,6 @@ WHERE stripe_session_id = '${checkoutSessionCompleted.id}';
         console.log(`Unhandled event type ${event.type}`);
     }
 
-    // Return a 200 res to acknowledge receipt of the event
     res.send().end();
   }
 );

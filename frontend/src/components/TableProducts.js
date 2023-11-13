@@ -7,24 +7,26 @@ export default function TableProducts() {
   const productStore = useProductStore();
   const [searchTerm, setSearchTerm] = useState("");
 
+  // List of All Products
+  const products = productStore.products;
+
   useEffect(() => {
+    // Retrieve List of Products
     productStore.fetchProducts();
   }, []);
 
-  const filteredProducts = productStore.products
-    ? productStore.products.filter((product) =>
+  // Function Research Products
+  const filteredProducts = products
+    ? products.filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : [];
 
-  console.log(productStore.products);
   const cart = useContext(CartContext);
-
-  console.log(productStore.productData);
-  console.log(cart.items);
 
   const renderedData = filteredProducts.length ? (
     filteredProducts.map((product) => {
+      // Quantity From Cart
       const productQuantity = cart.getProductQuantity(product.id);
 
       return (
@@ -78,10 +80,6 @@ export default function TableProducts() {
                   +
                 </button>
               )}
-
-              <button onClick={() => cart.deleteFromCart(product.id)}>
-                Remove
-              </button>
             </>
           )}
         </tr>

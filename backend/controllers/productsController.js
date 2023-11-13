@@ -7,7 +7,7 @@ const fetchProducts = async (req, res) => {
       if (err) {
         res.status(500).send("Erreur lors de la requête MySQL.");
       } else {
-        res.json({ products: rows }); // Envoyer les données en réponse
+        res.json({ products: rows });
       }
     });
   } catch (error) {
@@ -18,7 +18,6 @@ const fetchProducts = async (req, res) => {
 
 const fetchProductData = async (req, res) => {
   try {
-    // Assuming you pass the product ID in the request parameters
     const productId = req.params.id;
 
     const sqlQuery = "SELECT * FROM products WHERE id = ?";
@@ -28,7 +27,7 @@ const fetchProductData = async (req, res) => {
       } else {
         // Check if the product with the specified ID exists
         if (rows.length === 1) {
-          res.json({ product: rows[0] }); // Send the product data in response
+          res.json({ product: rows[0] });
         } else {
           res.status(404).json({ error: "Product not found" });
         }

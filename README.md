@@ -3,6 +3,7 @@
 >This project is a basic React app ecommerce with cart and stock management, 
 
 **Technology Stack:** React, Express, Mysql
+
 **Functionnality:** List Products, Cart Context, Retrieve my orders by email, Stripe payment.
 
 To run this app, you need a mySQL database, and a Stripe Account.

@@ -35,9 +35,15 @@ export default function CheckoutSuccess() {
             <h3>Your Order Details:</h3>
             {orderDetails.map((order) => (
               <div className="my-5" key={order.id}>
-                <p>Email: {order.email}</p>
-                <p>Details: {order.order_desc}</p>
-                <p>When: {new Date(order.date_creation).toLocaleString()}</p>
+                <div className="card w-96 bg-base-100 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title">
+                      {new Date(order.date_creation).toLocaleString()}
+                    </h2>
+                    <p>{order.order_desc}</p>
+                    <div className="card-actions justify-end"></div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

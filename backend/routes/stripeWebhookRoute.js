@@ -50,7 +50,7 @@ router.post(
 SET email = '${checkoutSessionCompleted.customer_details.email}',
     adresse = '${escapedAddress}',
     amount_total = '${amountTotal}',
-    order_desc = '${sessionDesc}'
+    order_desc = '${escapedSessionDesc}'
 WHERE stripe_session_id = '${checkoutSessionCompleted.id}';
   `;
 

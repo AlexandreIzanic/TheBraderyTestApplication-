@@ -24,7 +24,6 @@ export function CartProvider({ children }) {
     const existingProduct = cartProducts.find((product) => product.id === id);
 
     if (!existingProduct) {
-      console.log("test");
       console.log(existingProduct);
       // Product is not in the cart
       setCartProducts([...cartProducts, { id, quantity: 1, name, price }]);

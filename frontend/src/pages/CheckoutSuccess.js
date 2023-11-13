@@ -36,7 +36,7 @@ export default function CheckoutSuccess() {
             {orderDetails.map((order) => (
               <div className="my-5" key={order.id}>
                 <p>Email: {order.email}</p>
-                <p>Address: {order.adresse}</p>
+                <p>Details: {order.order_desc}</p>
                 <p>When: {new Date(order.date_creation).toLocaleString()}</p>
               </div>
             ))}

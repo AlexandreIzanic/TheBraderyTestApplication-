@@ -44,14 +44,3 @@ module.exports = {
   fetchProducts,
   fetchProductData,
 };
-
-/* const sqlQuery = "SELECT * FROM products";
-mysqlDB.connection.query(sqlQuery, (err, products) => {
-  if (err) {
-    console.log(err);
-  } else {
-    const rows = JSON.parse(JSON.stringify(products));
-    console.log(rows);
-  }
-});
- */

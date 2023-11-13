@@ -28,7 +28,6 @@ router.post(
     switch (event.type) {
       case "checkout.session.completed":
         const checkoutSessionCompleted = event.data.object;
-        console.log(checkoutSessionCompleted);
 
         const addressDetails =
           checkoutSessionCompleted.shipping_details.address;
@@ -45,7 +44,8 @@ router.post(
         );
 
         const sessionDesc = session.metadata.metadataItem;
-
+        // Prevent apostrophe error on SQL query
+        const escapedSessionDesc = sessionDesc.replace(/'/g, "''");
         // Update order created when checkout session created
         const insertOrderQuery = `UPDATE orders
 SET email = '${checkoutSessionCompleted.customer_details.email}',
@@ -55,10 +55,33 @@ SET email = '${checkoutSessionCompleted.customer_details.email}',
 WHERE stripe_session_id = '${checkoutSessionCompleted.id}';
   `;
 
-        const idRegex = /ID: (\d+)/;
-        const id1 = sessionDesc.match(idRegex)[1];
-        console.log("id1");
-        console.log(id1);
+        // Extraire les ID des orders
+
+        const regex = /ID: (\d+),.*?Quantity: (\d+)/g;
+        const productsIds = [];
+        let match;
+
+        // Isoler les ID du String
+        while ((match = regex.exec(sessionDesc)) !== null) {
+          const productId = parseInt(match[1]);
+          const quantity = parseInt(match[2]);
+
+          productsIds.push({ productId, quantity });
+        }
+
+        console.log(productsIds);
+
+        productsIds.forEach((id) => {
+          // Mettre a jour l'inventaire
+          const updateQuery = `UPDATE products SET inventory = inventory - ${id.quantity} 
+          WHERE id = ${id.productId}`;
+          mysqlDB.connection.query(updateQuery, (error, results) => {
+            if (error) throw error;
+            console.log(
+              `Mise à jour réussie pour le produit avec l'ID ${id.productId}`
+            );
+          });
+        });
 
         try {
           await mysqlDB.connection.query(insertOrderQuery);

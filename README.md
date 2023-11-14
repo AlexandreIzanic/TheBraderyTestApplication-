@@ -73,7 +73,12 @@ STRIPE_ENDPOINT_SECRET =
 
 - /frontend/index.js => axios.defaults.baseURL 
 
+ ##  How use a fake and valid credit card : 
+use a credit card number such as 4242 4242 4242 4242. Enter this card number in the Dashboard or in a payment form.
 
+Use a valid expiration date such as 12/34.
+Use any three-digit CVC code 
+Use the value of your choice for the other fields in the form.
  
  ## License
 
